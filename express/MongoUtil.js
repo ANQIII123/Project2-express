@@ -1,6 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
 
-// global variable is to store the database
 let _db;
 
 async function connect(url, dbname) {
