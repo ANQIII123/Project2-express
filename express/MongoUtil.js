@@ -4,7 +4,7 @@ let _db;
 
 async function connect(url, dbname) {
     let client = await MongoClient.connect(url, {
-        useUnifiedTopology: true
+        'useUnifiedTopology': true
     })
     _db = client.db(dbname);
     console.log("Database connected");
