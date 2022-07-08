@@ -28,7 +28,6 @@ app.use(express.urlencoded({
 
 const MONGO_URI = process.env.MONGO_URI;
 
-
 function getCheckboxValues(rawTags) {
     let tags = [];
     if (Array.isArray(rawTags)) {
@@ -49,9 +48,8 @@ async function main() {
         return covers;
     }
     
-
-    
     const db = await MongoUtil.connect(MONGO_URI, "PianoSheet");
+
     app.get('/cover', async function(req,res) {
      
         let data = await db.collection('cover').find({}).limit(2).toArray();
@@ -61,6 +59,7 @@ async function main() {
     app.get('/', function(req,res){
         res.send("<h1>Express testing123</h1>");
     })
+
 
     // app.get('/',async function(req,res) {
     //   res.send(<h1>"Express test"</h1>)
