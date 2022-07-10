@@ -16,20 +16,16 @@ app.use(cors());
 // SETUP END
 
 async function main() {
-    db = await MongoUtil.connect(mongoUrl, "wrong");
+    db = await MongoUtil.connect(mongoUrl, "PianoSheet");
 }
 
-
-
-app.get("/get_all_sheet"), async (req, res) => {
+app.get("/get_all_sheet", async (req, res) => {
     let db = MongoUtil.getDB();
 
     try {
-        let result = await db.collection("cover").find({
-            '_id': new ObjectId('62c7c495d286549d4486084c')
-        });
+        let result = await db.collection("cover").find().toArray();
         res.status(200);
-        res.send('testing');
+        res.send(result);
     } catch {
         res.status(500);
         res.send({
@@ -38,8 +34,7 @@ app.get("/get_all_sheet"), async (req, res) => {
         console.log(e);
     }
 
-
-}
+})
 
 app.post("/free_food_sighting", async (req, res) => {
     // the document must have
@@ -67,6 +62,8 @@ app.post("/free_food_sighting", async (req, res) => {
         console.log(e);
     }
 });
+
+
 
 main();
 
