@@ -36,6 +36,36 @@ app.get("/get_all_sheet", async (req, res) => {
 
 })
 
+app.post("/add_sheet", async (req, res) => {
+    let db = MongoUtil.getDB();
+
+    let songname = req.body.songname;
+    let composer = req.body.composer;
+    let numberOfPages = req.body.numberOfPages;
+    let cost =  req.body.cost;
+
+    const _original = {songname : songname , Composer: composer}
+    const _cover = {numberOfPages:numberOfPages, cost:cost } 
+
+    try {
+        let result = await db.collection("cover").insertOne({
+            original: _original,
+            cover : _cover,
+        });
+        res.status(200);
+        res.send(result);
+    } catch {
+        res.status(500);
+        res.send({
+            error: "Internal server error. Please contact administrator"
+        });
+        console.log(e);
+    }
+
+})
+
+
+
 app.post("/free_food_sighting", async (req, res) => {
     // the document must have
     // description: a brief of description what the free food has
