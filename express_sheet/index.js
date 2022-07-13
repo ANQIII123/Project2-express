@@ -9,9 +9,9 @@ const ObjectId = require("mongodb").ObjectId;
 const MongoUtil = require("./MongoUtil.js");
 
 let app = express();
-// !! Enable processing JSON data
+
 app.use(express.json());
-// !! Enable CORS
+
 app.use(cors());
 // SETUP END
 
@@ -67,16 +67,11 @@ app.post("/add_sheet", async (req, res) => {
 
 
 app.post("/free_food_sighting", async (req, res) => {
-    // the document must have
-    // description: a brief of description what the free food has
-    // food: an array of short phrases (no more than 100 characters) about
-    // what the free food has
-    // datetime: when is it sighted (default to the NOW -- current date
-    // time, must be the YYYY-MM-DD format)
+    
     let description = 'my desc';
     let food = 'my food';
     try {
-        // tell mongo to insert the document
+        
         let result = await db.collection("free_food_sightings").insertOne({
             description: description,
             food: food,
