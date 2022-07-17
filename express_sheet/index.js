@@ -19,6 +19,12 @@ async function main() {
     db = await MongoUtil.connect(mongoUrl, "PianoSheet");
 }
 
+app.get("/" , async (req,res) =>{
+    res.status(204)
+    console.log('started succcess');
+}
+)
+
 app.get("/get_all_sheet", async (req, res) => {
     let db = MongoUtil.getDB();
 
@@ -39,20 +45,11 @@ app.get("/get_all_sheet", async (req, res) => {
 app.post("/add_sheet", async (req, res) => {
     let db = MongoUtil.getDB();
 
-    let songname = req.body.songname;
-    let composer = req.body.composer;
-    let numberOfPages = req.body.numberOfPages;
-    let cost =  req.body.cost;
-
-    const _original = {songname : songname , Composer: composer}
-    const _cover = {numberOfPages:numberOfPages, cost:cost } 
+    let sheet = req.body.sheet;
 
     try {
-        let result = await db.collection("cover").insertOne({
-            original: _original,
-            cover : _cover,
-        });
-        res.status(200);
+        let result = await db.collection("cover").insertOne(sheet);
+
         res.send(result);
     } catch {
         res.status(500);
@@ -66,26 +63,23 @@ app.post("/add_sheet", async (req, res) => {
 
 
 
-app.post("/free_food_sighting", async (req, res) => {
-    
-    let description = 'my desc';
-    let food = 'my food';
+app.post("/sheet", async (req, res) => {
+    let db = MongoUtil.getDB();
+
     try {
-        
-        let result = await db.collection("free_food_sightings").insertOne({
-            description: description,
-            food: food,
-            datetime: datetime
-        });
+        let result = await db.collection("cover").findOne(
+            {_id:ObjectId(req.body.id)}       
+        )
         res.status(200);
         res.send(result);
-    } catch (e) {
+    } catch {
         res.status(500);
         res.send({
             error: "Internal server error. Please contact administrator"
         });
         console.log(e);
     }
+
 });
 
 
