@@ -1,16 +1,15 @@
 // SETUP BEGINS
 require("dotenv").config();
 const mongoUrl = process.env.MONGO_URL;
-
+const ObjectId = require('mongodb').ObjectId;
 const express = require("express");
 const cors = require("cors");
 
-const ObjectId = require("mongodb").ObjectId;
 const MongoUtil = require("./MongoUtil.js");
-
 let app = express();
 
 app.use(express.json());
+
 
 app.use(cors());
 // SETUP END
@@ -22,8 +21,7 @@ async function main() {
 app.get("/" , async (req,res) =>{
     res.status(204)
     console.log('started succcess');
-}
-)
+})
 
 app.get("/get_all_sheet", async (req, res) => {
     let db = MongoUtil.getDB();
@@ -42,19 +40,18 @@ app.get("/get_all_sheet", async (req, res) => {
 
 })
 
-app.post("/add_sheet", async (req, res) => {
+app.post("/addSheet", async (req, res) => {
     let db = MongoUtil.getDB();
-
+ 
     let sheet = req.body.sheet;
 
     try {
         let result = await db.collection("cover").insertOne(sheet);
-
         res.send(result);
     } catch {
         res.status(500);
         res.send({
-            error: "Internal server error. Please contact administrator"
+            'error': "Internal server error. Please contact administrator"
         });
         console.log(e);
     }
@@ -81,6 +78,7 @@ app.post("/sheet", async (req, res) => {
     }
 
 });
+
 
 
 
