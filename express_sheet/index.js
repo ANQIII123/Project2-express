@@ -7,6 +7,7 @@ const cors = require("cors");
 
 const MongoUtil = require("./MongoUtil.js");
 const { Decimal128 } = require("mongodb");
+const { json } = require("stream/consumers");
 let app = express();
 
 app.use(express.json());
@@ -105,7 +106,7 @@ app.post("/getSheet", async (req, res) => {
     let db = MongoUtil.getDB();
 
     let _keyword = req.body.keyword;
-    let _limit = req.body.limit? req.body.limit:5;
+    let _limit = req.body.limit? req.body.limit:20;
     let _difficulty = req.body.difficulty;
     let _maxCost = req.body.maxCost;
 
@@ -134,6 +135,52 @@ app.post("/getSheet", async (req, res) => {
 })
 
 
+app.post("/login",async (req,res)=>{ //takes in userEmail and password in body
+    let db = MongoUtil.getDB();
+    let result = await db.collection("user").find(
+        { userEmail:req.body.userEmail},       
+    ).toArray()
+    if(result.length<1){
+        res.send([false, {reason:'Email not fund'}])
+        return
+    }
+    if(result[0].password !== req.body.password){
+        res.send([false, {reason:'Wrong Password'}])
+        return
+    }
+    
+    res.status(200)
+    res.send([true, {username:result[0].username,userEmail:result[0].userEmail,userNickName:result[0].userNickName}])
+    return
+
+})
+
+app.post("/register",async (req,res)=>{ //takes in an user object in body
+    let db = MongoUtil.getDB();
+    let result = await db.collection("user").find(
+        { userEmail:req.body.user.userEmail}       
+    ).toArray()
+    if(result.length>=1){
+        res.send([false, {reason:'Email is registered'}])
+        return
+    }
+
+    result = await db.collection("user").find(
+        {username:req.body.user.username}       
+    ).toArray()
+    if(result.length>=1){
+        res.send([false, {reason:'user name is registered'}])
+        return
+    }
+
+    res.status(200)
+    let respond = await db.collection("user").insertOne(req.body.user);
+    res.send([true, JSON.stringify(respond)])
+    return
+
+})
+
+
 
 
 
@@ -142,7 +189,4 @@ main();
 // START SERVER
 app.listen(3000, () => {
     console.log("Server has started");
-    const query = { $and:[{$text: { $search: 'hello' }}]}
-    query.$and.push({'cover.difficulty': 'easy' })
-    console.log(query)
 });
