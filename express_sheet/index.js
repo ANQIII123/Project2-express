@@ -42,6 +42,8 @@ app.get("/get_all_sheet", async (req, res) => {
 
 })
 
+
+
 app.post("/addSheet", async (req, res) => {
     let db = MongoUtil.getDB();
  
@@ -61,7 +63,27 @@ app.post("/addSheet", async (req, res) => {
 
 })
 
+app.put("/updatesheet", async (req, res) => {
+    let db = MongoUtil.getDB();
+    const sheet = req.body.sheet;
+    const id = req.body.id;
+    try {
+        await sheet.findById(id,( updateSheet)=>{
+           updateSheet.songName = newSongName
+           updateSheet.save();
+        })
+            // {_id:ObjectId(req.body.id)}       
+        res.status(200);
+        res.send(result); 
+    } catch {
+        res.status(500);
+        res.send({
+            error: "Internal server error. Please contact administrator"
+        });
+        console.log(e);
+    }
 
+});
 
 app.post("/deletesheet", async (req, res) => {
     let db = MongoUtil.getDB();
@@ -83,6 +105,7 @@ app.post("/deletesheet", async (req, res) => {
 });
 
 
+
 app.post("/getSheetById", async (req, res) => {
     let db = MongoUtil.getDB();
 
@@ -90,6 +113,24 @@ app.post("/getSheetById", async (req, res) => {
         let result = await db.collection("cover").findOne(
             {_id:ObjectId(req.body.id)}       
         )
+        res.status(200);
+        res.send(result);
+    } catch {
+        res.status(500);
+        res.send({
+            error: "Internal server error. Please contact administrator"
+        });
+        console.log(e);
+    }
+
+})
+
+app.post("/reviews", async (req, res) => {
+    let db = MongoUtil.getDB();
+    let review= req.body.reviews;
+   
+    try {
+        let result = await db.collection("cover").insertOne(review)
         res.status(200);
         res.send(result);
     } catch {
