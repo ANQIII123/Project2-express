@@ -16,5 +16,6 @@
     "node": "^18.5.0",
     "nodemon": "^2.0.20"
   },
+  "devDependencies": {},
   "description": ""
 }
